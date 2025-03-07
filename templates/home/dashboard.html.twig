@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dashboard🧑‍💻{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h2 class="text-center mb-4">Dashboard🧑‍💻</h2>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary" type="button" id="updateBtn">Update</button>
+                        <button class="btn btn-outline-danger" type="button" id="deleteBtn">Delete</button>
+                    </div>
+                    <hr>
+                    <div class="d-grid gap-2" id="updt">
+                        <form method="POST" action="{{ path('update') }}">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input type="text" class="form-control" name="username" id="username" placeholder="Enter your username">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control" id="email" placeholder="Enter your email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" name="password" class="form-control" id="password" placeholder="Enter your password">
+                            </div>
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Role</label>
+                                <select class="form-select" id="role" name="role">
+                                    <option value="ROLE_USER">USER</option>
+                                    <option value="ROLE_ADMIN">ADMIN</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Submit</button>
+                        </form>
+                    </div>
+                    <div class="d-grid gap-2" id="dlt" style="display: none;">
+                        <form method="POST" action="{{ path('delete') }}">
+                            <div class="mb-3">
+                                <label for="passwordDelete" class="form-label">Confirm password</label>
+                                <input type="password" name="password" class="form-control" id="passwordDelete" placeholder="Enter your password">
+                            </div>
+                            <button type="submit" class="btn btn-danger w-100">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center mt-3">
+        <a href="{{ path('logout') }}" class="btn btn-outline-secondary">Log out 🪨</a>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const updateBtn = document.getElementById('updateBtn');
+        const deleteBtn = document.getElementById('deleteBtn');
+        const updateForm = document.getElementById('updt');
+        const deleteForm = document.getElementById('dlt');
+        
+        // Initial display state: show update form, hide delete form
+        updateForm.style.display = 'block';
+        deleteForm.style.display = 'none';
+        
+        // Event listener for the update button
+        updateBtn.addEventListener('click', function() {
+            // Show update form, hide delete form
+            updateForm.style.display = 'block';
+            deleteForm.style.display = 'none';
+            
+            // Style button states
+            updateBtn.classList.add('btn-primary');
+            updateBtn.classList.remove('btn-outline-primary');
+            deleteBtn.classList.add('btn-outline-danger');
+            deleteBtn.classList.remove('btn-danger');
+        });
+        
+        // Event listener for the delete button
+        deleteBtn.addEventListener('click', function() {
+            // Show delete form, hide update form
+            updateForm.style.display = 'none';
+            deleteForm.style.display = 'block';
+            
+            // Style button states
+            deleteBtn.classList.add('btn-danger');
+            deleteBtn.classList.remove('btn-outline-danger');
+            updateBtn.classList.add('btn-outline-primary');
+            updateBtn.classList.remove('btn-primary');
+        });
+    });
+</script>
+{% endblock %}
