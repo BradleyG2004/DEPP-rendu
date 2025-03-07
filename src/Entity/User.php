@@ -25,13 +25,16 @@ class User implements PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $password = null;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['remove'])]
+    private ?Infos $infos = null;
+
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
     /**
      * @var Collection<int, UserSession>
      */
-    #[ORM\OneToMany(targetEntity: UserSession::class, mappedBy: 'User')]
+    #[ORM\OneToMany(targetEntity: UserSession::class, mappedBy: 'user',cascade: ['remove'])]
     private Collection $token;
 
     public function __construct()
@@ -48,7 +51,7 @@ class User implements PasswordAuthenticatedUserInterface
     {
         return $this->username;
     }
-
+ 
     public function setUsername(string $username): static
     {
         $this->username = $username;

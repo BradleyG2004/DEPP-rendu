@@ -7,14 +7,11 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-lg">
-                <div class="card-body">
-                    <h2 class="text-center mb-4">Dashboard🧑‍💻</h2>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-outline-primary" type="button" id="updateBtn">Update</button>
-                        <button class="btn btn-outline-danger" type="button" id="deleteBtn">Delete</button>
-                    </div>
+                <div class="card-body row">
+                    <h2 class="text-center mb-4 col-12">Dashboard🧑‍💻</h2>
                     <hr>
-                    <div class="d-grid gap-2" id="updt">
+
+                    <div class="d-grid gap-2 col m-2 p-3 border border-primary rounded shadow-sm">
                         <form method="POST" action="{{ path('update') }}">
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
@@ -38,7 +35,8 @@
                             <button type="submit" class="btn btn-primary w-100">Submit</button>
                         </form>
                     </div>
-                    <div class="d-grid gap-2" id="dlt" style="display: none;">
+
+                    <div class="d-grid gap-2 col m-2 p-3 border border-danger rounded shadow-sm">
                         <form method="POST" action="{{ path('delete') }}">
                             <div class="mb-3">
                                 <label for="passwordDelete" class="form-label">Confirm password</label>
@@ -47,6 +45,13 @@
                             <button type="submit" class="btn btn-danger w-100">Delete</button>
                         </form>
                     </div>
+                    {% for type, messages in app.flashes %}
+                        {% if messages|length > 0 %}
+                            <div class="alert alert-{{ type }}">
+                                {{ messages|first }} {# Affiche uniquement le premier message #}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -56,42 +61,5 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const updateBtn = document.getElementById('updateBtn');
-        const deleteBtn = document.getElementById('deleteBtn');
-        const updateForm = document.getElementById('updt');
-        const deleteForm = document.getElementById('dlt');
-        
-        // Initial display state: show update form, hide delete form
-        updateForm.style.display = 'block';
-        deleteForm.style.display = 'none';
-        
-        // Event listener for the update button
-        updateBtn.addEventListener('click', function() {
-            // Show update form, hide delete form
-            updateForm.style.display = 'block';
-            deleteForm.style.display = 'none';
-            
-            // Style button states
-            updateBtn.classList.add('btn-primary');
-            updateBtn.classList.remove('btn-outline-primary');
-            deleteBtn.classList.add('btn-outline-danger');
-            deleteBtn.classList.remove('btn-danger');
-        });
-        
-        // Event listener for the delete button
-        deleteBtn.addEventListener('click', function() {
-            // Show delete form, hide update form
-            updateForm.style.display = 'none';
-            deleteForm.style.display = 'block';
-            
-            // Style button states
-            deleteBtn.classList.add('btn-danger');
-            deleteBtn.classList.remove('btn-outline-danger');
-            updateBtn.classList.add('btn-outline-primary');
-            updateBtn.classList.remove('btn-primary');
-        });
-    });
-</script>
+
 {% endblock %}

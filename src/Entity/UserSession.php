@@ -14,7 +14,7 @@ class UserSession
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'token')]
-    private ?user $User = null;
+    private ?User $user = null;
 
     #[ORM\Column(length: 255)]
     private ?string $token = null;
@@ -29,12 +29,12 @@ class UserSession
 
     public function getUser(): ?user
     {
-        return $this->User;
+        return $this->user;
     }
 
     public function setUser(?user $User): static
     {
-        $this->User = $User;
+        $this->user = $User;
 
         return $this;
     }
