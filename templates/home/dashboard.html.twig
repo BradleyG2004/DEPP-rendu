@@ -10,8 +10,8 @@
                 <div class="card-body row">
                     <h2 class="text-center mb-4 col-12">Dashboard🧑‍💻</h2>
                     <hr>
-
                     <div class="d-grid gap-2 col m-2 p-3 border border-primary rounded shadow-sm">
+                        <b>Fill the fields to be changed 👺</b>
                         <form method="POST" action="{{ path('update') }}">
                             <div class="mb-3">
                                 <label for="username" class="form-label">Username</label>
@@ -35,11 +35,10 @@
                             <button type="submit" class="btn btn-primary w-100">Submit</button>
                         </form>
                     </div>
-
                     <div class="d-grid gap-2 col m-2 p-3 border border-danger rounded shadow-sm">
                         <form method="POST" action="{{ path('delete') }}">
                             <div class="mb-3">
-                                <label for="passwordDelete" class="form-label">Confirm password</label>
+                                <label for="passwordDelete" class="form-label"><b>Confirm password</b></label>
                                 <input type="password" name="password" class="form-control" id="passwordDelete" placeholder="Enter your password">
                             </div>
                             <button type="submit" class="btn btn-danger w-100">Delete</button>
@@ -53,6 +52,15 @@
                         {% endif %}
                     {% endfor %}
                 </div>
+            </div>
+        </div>
+        <div class="card shadow-lg border border-primary rounded shadow-sm p-3 col-md-3">
+            <h3>Profile 🧌</h3>
+            <hr>
+            <div class="card-body">
+                <p><strong>Username :</strong> {{ user.username }}</p>
+                <p><strong>Email :</strong> {{ user.email }}</p>
+                <p><strong>Role :</strong> {{ user.roles[0] }}</p>
             </div>
         </div>
     </div>

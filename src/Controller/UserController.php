@@ -16,16 +16,32 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 final class UserController extends AbstractController
 {
     #[Route('/login', name: 'login-page')]
-    public function loginForm(): Response
+    public function loginForm(EntityManagerInterface $em,Request $request): Response
     {
+        $userSession = $em->getRepository(UserSession::class)->findOneBy(['token' => $request->cookies->get('auth_token')]);
+
+        if ($userSession && $userSession->getExpiresAt() > new \DateTime()) {
+            return $this->redirectToRoute('dashboard');
+        }
+
         return $this->render('user/login.html.twig', [
             'controller_name' => 'UserController',
         ]);
     }
 
     #[Route('/register', name: 'register-page')]
-    public function registerForm(): Response
+    public function registerForm(EntityManagerInterface $em,Request $request): Response
     {
+        $token = $request->cookies->get('auth_token');
+        if ($token) {
+            $userSession = $em->getRepository(UserSession::class)->findOneBy(['token' => $token]);
+
+            // Vérifier si la session existe et si elle est encore valide
+            if ($userSession && $userSession->getExpiresAt() > new \DateTime()) {
+                return $this->redirectToRoute('dashboard');
+            }
+        }
+
         return $this->render('user/register.html.twig', [
             'controller_name' => 'UserController',
         ]);
@@ -34,6 +50,12 @@ final class UserController extends AbstractController
     #[Route('/registerr', name: 'registerr', methods: ['POST'])]
     public function register(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher): Response
     {
+        $userSession = $em->getRepository(UserSession::class)->findOneBy(['token' => $request->cookies->get('auth_token')]);
+
+        if ($userSession && $userSession->getExpiresAt() > new \DateTime()) {
+            return $this->redirectToRoute('dashboard');
+        }
+
         // Récupération des données du formulaire
         $username = $request->request->get('username');
         $email = $request->request->get('email');
@@ -226,7 +248,6 @@ final class UserController extends AbstractController
     public function logout(Request $request, RequestStack $requestStack, EntityManagerInterface $em): Response
     {
         $session = $requestStack->getSession();
-        
         // Récupérer le token stocké dans le cookie
         $token = $request->cookies->get('auth_token');
 
