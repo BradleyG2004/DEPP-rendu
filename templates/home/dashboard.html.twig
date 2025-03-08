@@ -62,12 +62,18 @@
                 <p><strong>Email :</strong> {{ user.email }}</p>
                 <p><strong>Role :</strong> {{ user.roles[0] }}</p>
             </div>
+            {% if 'ROLE_ADMIN' in user.roles %}
+                <form action="{{ path('csv_upload') }}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="csvFile">Import other users ( CSV file ) :</label>
+                        <input type="file" id="csvFile" name="csvFile" accept=".csv" class="form-control mt-2">
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Importer</button>
+                </form>
+            {% endif %}
         </div>
     </div>
     <div class="text-center mt-3">
         <a href="{{ path('logout') }}" class="btn btn-outline-secondary">Log out 🪨</a>
     </div>
-</div>
-
-
 {% endblock %}

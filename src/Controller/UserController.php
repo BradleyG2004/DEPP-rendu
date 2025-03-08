@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Infos;
 use App\Entity\UserSession;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -268,4 +269,71 @@ final class UserController extends AbstractController
 
         return $response;
     }
+
+    #[Route('/upload', name: 'csv_upload')]
+    public function importCsv(Request $request, EntityManagerInterface $em, UserPasswordHasherInterface $passwordEncoder): Response
+{
+    $file = $request->files->get('csvFile');
+
+    if (!$file) {
+        $this->addFlash('danger', 'Aucun fichier n\'a été téléchargé.');
+        return $this->redirectToRoute('dashboard');
+    }
+
+    // Ouvrir et lire le fichier CSV
+    $handle = fopen($file->getPathname(), 'r');
+    if (!$handle) {
+        $this->addFlash('danger', 'Erreur lors de la lecture du fichier.');
+        return $this->redirectToRoute('dashboard');
+    }
+
+    // Sauter la première ligne (en-tête)
+    $firstLine = true;
+
+    // Lire chaque ligne du CSV
+    while (($data = fgetcsv($handle, 1000, ';')) !== false) {
+        if ($firstLine) {
+            $firstLine = false; // Passer à la ligne suivante après la première ligne
+            continue; // Ignore la première ligne
+        }
+
+        if (count($data) < 4) continue; // Ignore les lignes invalides
+
+        [$username, $email, $password, $roles, $rank, $victoire, $defaite] = array_pad($data, 7, null);
+
+        // Vérifier si l'utilisateur existe déjà
+        $existingUser = $em->getRepository(User::class)->findOneBy(['email' => $email]);
+
+        if (!$existingUser) {
+            // Créer un nouvel utilisateur
+            $user = new User();
+            $user->setUsername($username);
+            $user->setEmail($email);
+            $user->setPassword($passwordEncoder->hashPassword($user, $password));
+            $user->setRoles([$roles]);
+
+            $em->persist($user);
+
+            // Si les infos existent, créer un objet Infos
+            if ($rank !== null || $victoire !== null || $defaite !== null) {
+                $infos = new Infos();
+                $infos->setUser($user);
+                $infos->setRank($rank ?? 'Unranked');
+                $infos->setVictoire($victoire ?? '0');
+                $infos->setDefaite($defaite ?? '0');
+                $em->persist($infos);
+            }
+        }
+    }
+
+    fclose($handle);
+    $em->flush(); // Enregistre tout en base de données
+
+    $this->addFlash('success', 'Importation réussie.');
+    return $this->redirectToRoute('dashboard');
+}
+
+
+
+
 }
