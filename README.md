@@ -60,6 +60,8 @@ Sécurisation
 
 Les tokens d'authentification sont stockés dans les cookies avec les attributs HttpOnly et Secure pour éviter les attaques par script intersite (XSS). Les sessions ont une durée de vie limitée et sont invalidées après leur expiration.
 
+Tutoriel vidéo : https://app.arcade.software/share/N8Pmi6jpxfNqwAja0TkH
+
 ![image](https://github.com/user-attachments/assets/1b2ad843-55a8-4173-a60f-6df0c0c53e3b)
 
 ![image](https://github.com/user-attachments/assets/0ca27963-1b7f-4a72-ad8b-41ea4a07a3fb)
